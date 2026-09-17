@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <!-- codex-elegant: design details refined -->
+  <base target="_top">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <?!= include('SharedTokens'); ?>
+<title>Way To Go — Funcionalidades</title>
+  <style>
+:focus-visible {
+  outline: 3px solid var(--accent, #8ab4f8);
+  outline-offset: 2px;
+}
+    body{font-family: 'Inter', system-ui, -apple-system, sans-serif;margin:0;background:#0f172a;color:#e2e8f0}
+    .wrap{max-width:820px;margin:0 auto;padding:24px}
+    h2{margin:0 0 4px} h3{margin:18px 0 8px;border-bottom:1px solid #334155;padding-bottom:4px}
+    label{display:block;font-size:13px;margin:8px 0 2px;color:#94a3b8}
+    input,select,textarea{width:100%;padding:8px;border:1px solid #334155;border-radius:6px;background:#1e293b;color:#e2e8f0;box-sizing:border-box}
+    button{margin-top:10px;padding:9px 16px;border:0;border-radius:6px;background:#2563eb;color:#fff;cursor:pointer}
+    button.sec{background:#334155}
+    .card{background:#1e293b;border:1px solid #334155;border-radius:10px;padding:16px;margin:14px 0}
+    .msg{font-size:13px;margin-top:8px;min-height:16px} .ok{color:#34d399}.err{color:#f87171}
+    table{width:100%;border-collapse:collapse;font-size:12px;margin-top:8px}
+    th,td{border:1px solid #334155;padding:4px 6px;text-align:left}
+    .hidden{display:none}
+  </style>
+
+<style>
+  :root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --bg-color: #f8fafc;
+    --text-color: #0f172a;
+    --spacing-sm: 0.5rem;
+    --spacing-md: 1rem;
+    --spacing-lg: 1.5rem;
+    --border-radius: 6px;
+    --transition-speed: 0.2s;
+  }
+  
+  /* Responsividade basica */
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Foco visivel (A11y) */
+  *:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+
+  /* Transicoes e micro-interacoes (Doherty) */
+  button, a, input, select, textarea {
+    transition: all var(--transition-speed) ease-in-out;
+  }
+  
+  button:hover, a:hover {
+    filter: brightness(0.9);
+  }
+  
+  button:active, a:active {
+    transform: scale(0.98);
+  }
+
+  /* Classes de Feedback de Processamento */
+  .loading-spinner {
+    border: 3px solid rgba(0,0,0,0.1);
+    border-left-color: var(--primary-color);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    display: inline-block;
+    vertical-align: middle;
+  }
+  
+  @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+  /* Estado desabilitado */
+  :disabled, .disabled {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+  }
+  
+  @media (max-width: 768px) {
+    body {
+      font-size: 14px;
+    }
+  }
+</style>
+
+
+
+<style id="up-oracular-design-system">
+:root {
+  color-scheme: dark;
+  --uo-bg: #15171c;
+  --uo-panel: #20242b;
+  --uo-text: #e9ecf1;
+  --uo-muted: #b2b9c4;
+  --uo-border: #343941;
+  --uo-accent: #7aa2d6;
+  --uo-radius-group: 10px;
+  --uo-radius-control: 8px;
+}
+
+html, body {
+  background: var(--uo-bg) !important;
+  color: var(--uo-text) !important;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body, input, select, textarea, button {
+  color: var(--uo-text);
+}
+
+.card, .panel, .modal, .dialog, dialog, .container,
+.box, .widget, .section, .sidebar, .drawer, .popover,
+[role="dialog"], [class*="card"], [class*="panel"] {
+  background-color: var(--uo-panel) !important;
+  border-color: var(--uo-border) !important;
+  border-radius: var(--uo-radius-group) !important;
+}
+
+button, input, select, textarea, .btn, .button,
+[role="button"], [role="menuitem"], .dropdown-item,
+.menu-item, [class*="button"], [class*="dropdown-item"] {
+  border-radius: var(--uo-radius-control) !important;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+input, select, textarea {
+  background-color: var(--uo-panel) !important;
+  border: 1px solid var(--uo-border) !important;
+  padding: 8px !important;
+  box-sizing: border-box;
+}
+
+label, .form-label, [class*="form-label"] {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--uo-muted) !important;
+  font-size: 13px !important;
+  line-height: 1.35;
+}
+
+.uo-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.uo-feedback-box {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483647;
+  min-width: 220px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 10px 12px;
+  border: 1px solid var(--uo-border);
+  border-radius: var(--uo-radius-group);
+  background: var(--uo-panel);
+  color: var(--uo-text);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.32);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+.uo-feedback-box.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.uo-feedback-box[data-kind="ok"] {
+  border-color: #8fc2a6;
+  color: #8fc2a6;
+}
+
+.uo-feedback-box[data-kind="err"] {
+  border-color: #d98b93;
+  color: #d98b93;
+}
+
+form[aria-busy="true"] {
+  opacity: 0.72;
+  cursor: progress;
+}
+
+form[aria-busy="true"] :is(button, input[type="submit"], input[type="button"]) {
+  pointer-events: none;
+}
+
+button, .btn-primary, .button-primary,
+[class*="primary"][role="button"] {
+  background-color: var(--uo-accent) !important;
+}
+
+p, small, .muted, .secondary, .subtitle,
+[class*="muted"], [class*="secondary"] {
+  color: var(--uo-muted) !important;
+}
+
+hr, table, th, td, fieldset {
+  border-color: var(--uo-border) !important;
+}
+
+a {
+  color: var(--uo-accent);
+}
+
+/* Geometrias funcionais permanecem circulares. */
+.avatar, .spinner, .loading-ring, .dot, .status-dot,
+[class*="avatar"], [class*="spinner"], [class*="loading-ring"] {
+  border-radius: 50% !important;
+}
+</style>
+<script id="up-oracular-form-feedback">
+(function () {
+  'use strict';
+  if (window.UpOracularFeedback) return;
+
+  var timer = null;
+  function notify(kind, message) {
+    var box = document.getElementById('uo-feedback-box');
+    if (!box) {
+      box = document.createElement('div');
+      box.id = 'uo-feedback-box';
+      box.className = 'uo-feedback-box';
+      box.setAttribute('role', 'status');
+      box.setAttribute('aria-live', 'polite');
+      document.body.appendChild(box);
+    }
+    box.dataset.kind = kind === 'err' ? 'err' : 'ok';
+    box.textContent = String(message || (kind === 'err' ? 'Nao foi possivel concluir.' : 'Operacao concluida.'));
+    box.classList.add('is-visible');
+    clearTimeout(timer);
+    timer = setTimeout(function () {
+      box.classList.remove('is-visible');
+    }, 1000);
+  }
+
+  function connectLabels(form) {
+    form.querySelectorAll('input:not([type="hidden"]), select, textarea').forEach(function (field, index) {
+      var id = field.id || ('uo-field-' + index + '-' + Math.random().toString(36).slice(2, 7));
+      field.id = id;
+      var label = form.querySelector('label[for="' + id + '"]');
+      if (!label) {
+        var sibling = field.previousElementSibling;
+        if (sibling && sibling.tagName === 'LABEL') {
+          sibling.htmlFor = id;
+          label = sibling;
+        }
+      }
+      if (label && field.parentElement && !field.parentElement.classList.contains('uo-field')) {
+        field.parentElement.classList.add('uo-field');
+      }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('form').forEach(connectLabels);
+  });
+
+  document.addEventListener('submit', function (event) {
+    var form = event.target;
+    if (!form || form.tagName !== 'FORM') return;
+    form.setAttribute('aria-busy', 'true');
+    notify('ok', 'Enviando...');
+    window.setTimeout(function () {
+      if (form.getAttribute('aria-busy') === 'true') {
+        form.removeAttribute('aria-busy');
+      }
+    }, 10000);
+  }, true);
+
+  window.UpOracularFeedback = {
+    ok: function (message) { notify('ok', message); },
+    err: function (message) { notify('err', message); },
+    done: function (form, message) {
+      if (form) form.removeAttribute('aria-busy');
+      notify('ok', message);
+    },
+    fail: function (form, message) {
+      if (form) form.removeAttribute('aria-busy');
+      notify('err', message);
+    }
+  };
+}());
+</script>
+
+  <style id="cdx-border-to-color">
+/* Padronização de borders → cores complementares (FROTA-20) */
+input:not([type="hidden"]),
+textarea,
+select,
+[class*="input"],
+[class*="field"],
+[class*="form"],
+.card,
+.panel,
+.box,
+.container,
+.modal,
+[class*="modal"],
+[class*="dialog"],
+dialog {
+  border: none !important;
+  border-width: 0 !important;
+}
+
+input:not([type="hidden"]),
+textarea,
+select {
+  background-color: #20242b !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1), 0 0 0 2px #e9ecf1 !important;
+}
+  </style>
+
+  <style id="fleet-mobile-wcag-aa">
+    /* Contrato FROTA: ergonomia S20 e WCAG 2.1 AA. */
+    html, body { max-width: 100%; overflow-x: hidden; }
+    :is(button, [role="button"], input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
+      min-width: 48px !important;
+      min-height: 48px !important;
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+<body>
+    <main>
+
+<div class="wrap">
+  <h2>Way To Go · Funcionalidades</h2>
+  <p style="color:#94a3b8">Observações sobre alunos e sugestões de melhoria (requer login).</p>
+
+  <div id="loginBox" class="card">
+    <h3>Entrar</h3>
+    <label>Usuário</label><input inputmode="text" id="u" placeholder="admin01">
+    <label>Senha</label><input inputmode="text" id="p" type="password" placeholder="admin123" autocomplete="current-password">
+    <button onclick="entrar()">Entrar</button>
+    <div id="loginMsg" class="msg"></div>
+  </div>
+
+  <div id="app" class="hidden">
+    <p>Logado como <b id="who"></b> · <a href="#" onclick="logout();return false">sair</a></p>
+
+    <div class="card">
+      <h3>Observação sobre aluno</h3>
+      <label>ID do aluno</label><input inputmode="text" id="ob_id" placeholder="AL-7">
+      <label>Observação</label><textarea id="ob_txt" rows="2"></textarea>
+      <button onclick="addObs()">Registrar observação</button>
+      <div id="obMsg" class="msg"></div>
+    </div>
+
+    <div class="card">
+      <h3>Sugerir melhoria de processo</h3>
+      <label>Área</label><input inputmode="text" id="me_a" placeholder="matrícula">
+      <label>Sugestão</label><textarea id="me_s" rows="2"></textarea>
+      <button onclick="addMel()">Sugerir melhoria</button>
+      <div id="meMsg" class="msg"></div>
+    </div>
+
+    <div class="card">
+      <h3>Aprovações (admin)</h3>
+      <p style="color:#94a3b8;font-size:13px;margin:4px 0">Apenas administradores. Liste as pendências e aprove ou rejeite.</p>
+      <button class="sec" onclick="loadPend()">Carregar pendentes</button>
+      <div id="pend"></div>
+    </div>
+
+    <div class="card">
+      <h3>Registros</h3>
+      <button class="sec" onclick="refreshAll()">Atualizar listas</button>
+      <h4>Observações</h4><div id="listOb"></div>
+      <h4>Sugestões de melhoria</h4><div id="listMe"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+  var LOGIN_FN = 'doLogin';
+  var CRED = { u:'', p:'' };
+  function $(id){ return document.getElementById(id); }
+  function val(id){ return $(id).value; }
+  function onErr(e){ alert('Erro: ' + (e && e.message ? e.message : e)); }
+  function run(fn, args, cb){ var r = google.script.run.withSuccessHandler(cb).withFailureHandler(onErr); r[fn].apply(r, args); }
+  function setMsg(id, text, ok){ var el=$(id); el.textContent=text||''; el.className='msg '+(ok?'ok':'err'); }
+
+  function entrar(){
+    var u=val('u'), p=val('p');
+    run(LOGIN_FN, [u,p], function(res){
+      var okk = res && (res.success || res.username || res.id);
+      if(!okk){ setMsg('loginMsg','Credenciais inválidas.', false); return; }
+      CRED.u=u; CRED.p=p;
+      $('who').textContent = (res.user && res.user.username) || res.username || u;
+      $('loginBox').classList.add('hidden'); $('app').classList.remove('hidden');
+      refreshAll();
+    });
+  }
+  function logout(){ CRED={u:'',p:''}; $('app').classList.add('hidden'); $('loginBox').classList.remove('hidden'); setMsg('loginMsg','',true); }
+
+  function addObs(){
+    run('registrarObservacaoAluno', [CRED.u,CRED.p,val('ob_id'),val('ob_txt')], function(res){
+      if(res && res.success){ setMsg('obMsg','Registrado: '+res.id, true); $('ob_txt').value=''; listOb(); }
+      else setMsg('obMsg', (res&&res.message)||'Falha.', false);
+    });
+  }
+  function addMel(){
+    run('sugerirMelhoriaProcesso', [CRED.u,CRED.p,val('me_a'),val('me_s')], function(res){
+      if(res && res.success){ setMsg('meMsg','Sugerido: '+res.id, true); $('me_s').value=''; listMe(); }
+      else setMsg('meMsg', (res&&res.message)||'Falha.', false);
+    });
+  }
+  function renderList(id, res){
+    var box=$(id); if(!res||!res.success){ box.innerHTML='<i>—</i>'; return; }
+    var it=res.itens||[]; if(!it.length){ box.innerHTML='<i>Nenhum registro.</i>'; return; }
+    var cols=Object.keys(it[0]); var h='<table><tr>'+cols.map(function(c){return '<th>'+c+'</th>';}).join('')+'</tr>';
+    it.forEach(function(r){ h+='<tr>'+cols.map(function(c){return '<td>'+(r[c]!=null?String(r[c]):'')+'</td>';}).join('')+'</tr>'; });
+    box.innerHTML=h+'</table>';
+  }
+  function listOb(){ run('listarObservacoesAluno',[CRED.u,CRED.p],function(r){renderList('listOb',r);}); }
+  function listMe(){ run('listarSugestoesMelhoria',[CRED.u,CRED.p],function(r){renderList('listMe',r);}); }
+  function refreshAll(){ listOb(); listMe(); }
+
+  var WF = { list:'listarMelhoriasPendentes', approve:'aprovarMelhoria', reject:'rejeitarMelhoria' };
+  function loadPend(){ run(WF.list, [CRED.u,CRED.p], wfRender); }
+  function wfRender(res){
+    var box=$('pend');
+    if(!res||!res.success){ box.innerHTML='<span class="err">'+((res&&res.message)||'Acesso negado.')+'</span>'; return; }
+    var it=res.itens||[]; if(!it.length){ box.innerHTML='<i>Sem pendências.</i>'; return; }
+    var skip=['ID','DataHora','Autor','Status','Revisor','RevisadoEm','ObsRevisao'];
+    var h='<table><tr><th>ID</th><th>Autor</th><th>Resumo</th><th>Ações</th></tr>';
+    it.forEach(function(r){
+      var resumo=Object.keys(r).filter(function(k){return skip.indexOf(k)===-1;}).map(function(k){return r[k];}).join(' · ');
+      h+='<tr><td>'+r.ID+'</td><td>'+(r.Autor||'')+'</td><td>'+resumo+'</td><td><button onclick="wfAprovar(\''+r.ID+'\')">Aprovar</button> <button class="sec" onclick="wfRejeitar(\''+r.ID+'\')">Rejeitar</button></td></tr>';
+    });
+    box.innerHTML=h+'</table>';
+  }
+  function wfAprovar(id){ var obs=prompt('Observação (opcional):')||''; run(WF.approve,[CRED.u,CRED.p,id,obs],function(res){ if(res&&res.success){ loadPend(); refreshAll(); } else alert((res&&res.message)||'Falha.'); }); }
+  function wfRejeitar(id){ var m=prompt('Motivo da rejeição:'); if(m===null) return; run(WF.reject,[CRED.u,CRED.p,id,m],function(res){ if(res&&res.success){ loadPend(); refreshAll(); } else alert((res&&res.message)||'Falha.'); }); }
+</script>
+  <?!= include("ClientCall"); ?>
+
+    </main>
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,117 @@
+<!-- dashboard.html -->
+<!--
+  Funcionalidade Principal: Dashboard genérico que redireciona para o dashboard apropriado baseado no papel do usuário.
+  
+  Descrição: Esta página é um redirecionador que detecta o papel do usuário e navega para o dashboard correto.
+             Pode ser usada como fallback quando nenhum dashboard específico é definido.
+  
+  Integrações:
+  - ClientRouter.html: Para navegação client-side.
+-->
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Dashboard · Sistema de Avaliação</title>
+  <base target="_top">
+  <style>
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      text-align: center;
+      background: white;
+      padding: 40px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+      margin: 0 0 20px 0;
+    }
+    p {
+      color: #666;
+      margin: 10px 0;
+    }
+    .spinner {
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid #28a745;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+  <style id="fleet-mobile-wcag-aa">
+    /* Contrato FROTA: ergonomia S20 e WCAG 2.1 AA. */
+    html, body { max-width: 100%; overflow-x: hidden; }
+    :is(button, [role="button"], input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
+      min-width: 48px !important;
+      min-height: 48px !important;
+      touch-action: manipulation;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Carregando Dashboard</h1>
+    <div class="spinner"></div>
+    <p>Redirecionando para seu dashboard...</p>
+  </div>
+
+  <script>
+    // Aguarda o ClientRouter estar disponível e redireciona para o dashboard apropriado
+    function redirectToDashboard() {
+      try {
+        // Se houver dados de sessão injetados pelo servidor
+        if (typeof data !== 'undefined' && data && data.session) {
+          var role = (data.session.role || 'aluno').toLowerCase();
+          var dashboardMap = {
+            'admin': 'DashboardAdmin',
+            'professor': 'DashboardProfessor',
+            'aluno': 'DashboardAluno'
+          };
+          var targetDashboard = dashboardMap[role] || 'DashboardAluno';
+          
+          if (typeof navigateTo === 'function') {
+            navigateTo(targetDashboard);
+          } else {
+            // Fallback se navigateTo não estiver disponível
+            window.location.hash = '#page=' + targetDashboard;
+          }
+        } else {
+          // Se não há dados de sessão, redireciona para login
+          if (typeof navigateTo === 'function') {
+            navigateTo('Login');
+          } else {
+            window.location.hash = '#page=Login';
+          }
+        }
+      } catch (e) {
+        console.error('Erro ao redirecionar:', e);
+        // Fallback para o dashboard do aluno
+        if (typeof navigateTo === 'function') {
+          navigateTo('DashboardAluno');
+        }
+      }
+    }
+
+    // Aguarda um pouco para garantir que o ClientRouter foi injetado
+    setTimeout(redirectToDashboard, 500);
+  </script>
+</body>
+</html>

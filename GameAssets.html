@@ -1,0 +1,187 @@
+<style>
+  .wtg-asset[hidden] { display: none !important; }
+  .wtg-asset { max-width: 100%; height: auto; }
+  .wtg-asset-status {
+    margin: .65rem 0 0;
+    color: var(--uo-muted, #b2b9c4);
+    font-size: .82rem;
+    line-height: 1.45;
+  }
+  .wtg-login-hero {
+    display: block;
+    width: min(100%, 560px);
+    max-height: 270px;
+    margin: 24px 0 0;
+    object-fit: cover;
+    border: 1px solid rgba(246, 183, 75, .38);
+    border-radius: 18px;
+    box-shadow: 0 22px 52px rgba(3, 9, 25, .34);
+  }
+  .wtg-decision-board {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(110px, .27fr);
+    gap: 14px;
+    align-items: end;
+    margin: 14px 0;
+    padding: 14px;
+    border: 1px solid rgba(63, 135, 196, .28);
+    border-radius: 14px;
+    background: linear-gradient(135deg, rgba(227, 241, 251, .92), rgba(231, 247, 238, .92));
+  }
+  .wtg-decision-board__map { width: 100%; max-height: 260px; object-fit: contain; }
+  .wtg-decision-board__avatar { width: min(100%, 160px); justify-self: center; }
+  .wtg-decision-board p { grid-column: 1 / -1; margin: 0; color: #26364e; line-height: 1.5; }
+  .wtg-decision-guides {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+    margin: 12px 0;
+  }
+  .wtg-decision-guide {
+    margin: 0;
+    padding: 10px;
+    border: 1px solid rgba(148, 163, 184, .24);
+    border-radius: 10px;
+    background: rgba(248, 250, 252, .78);
+  }
+  .wtg-decision-guide img { display: block; width: 100%; max-height: 105px; object-fit: contain; }
+  .wtg-decision-guide figcaption { margin-top: 7px; color: #44546a; font-size: .8rem; line-height: 1.42; }
+  #citizenshipDecisionForm[data-asset-background-ready="true"] {
+    padding: 16px;
+    border-radius: 12px;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, .94), rgba(255, 255, 255, .94)),
+      var(--wtg-comparator-background);
+    background-position: center;
+    background-size: cover;
+  }
+  .wtg-path-celebration {
+    display: grid;
+    grid-template-columns: 84px minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    margin-top: 14px;
+    padding: 14px;
+    border: 1px solid rgba(246, 183, 75, .46);
+    border-radius: 12px;
+    background: rgba(224, 245, 234, .88);
+    color: #26364e;
+  }
+  .wtg-path-celebration[hidden] { display: none; }
+  .wtg-path-celebration img { width: 84px; }
+  .wtg-path-celebration strong { display: block; margin-bottom: 4px; color: #274f79; }
+  .wtg-path-celebration p { margin: 0; line-height: 1.5; }
+  @media (max-width: 700px) {
+    .wtg-decision-board,
+    .wtg-decision-guides { grid-template-columns: 1fr; }
+    .wtg-decision-board__avatar { width: 120px; }
+    .wtg-login-hero { max-height: 180px; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .wtg-path-celebration:not([hidden]) { animation: wtg-path-reveal .35s ease-out; }
+    @keyframes wtg-path-reveal { from { opacity: 0; transform: translateY(8px); } }
+  }
+</style>
+<script>
+  window.WayToGoAssets = (function() {
+    var manifest = null;
+    var loading = false;
+
+    function isSafeDriveUrl(value) {
+      try {
+        var url = new URL(value);
+        return url.protocol === 'https:' && url.hostname === 'drive.google.com';
+      } catch (error) {
+        return false;
+      }
+    }
+
+    function setStatus(message) {
+      document.querySelectorAll('[data-asset-status]').forEach(function(node) {
+        node.textContent = message;
+        node.hidden = !message;
+      });
+    }
+
+    function applyImage(node) {
+      var name = node.getAttribute('data-asset-name');
+      var url = manifest && manifest.assets ? manifest.assets[name] : '';
+      if (!isSafeDriveUrl(url)) return;
+      node.src = url;
+      node.hidden = false;
+    }
+
+    function applyBackground(node) {
+      var name = node.getAttribute('data-asset-background');
+      var url = manifest && manifest.assets ? manifest.assets[name] : '';
+      if (!isSafeDriveUrl(url)) return;
+      node.style.setProperty('--wtg-comparator-background', 'url("' + url.replace(/"/g, '%22') + '")');
+      node.setAttribute('data-asset-background-ready', 'true');
+    }
+
+    function applyNode(node) {
+      if (!node || node.nodeType !== 1) return;
+      if (node.matches('[data-asset-name]:not([data-asset-deferred])')) applyImage(node);
+      if (node.matches('[data-asset-background]')) applyBackground(node);
+      node.querySelectorAll('[data-asset-name]:not([data-asset-deferred])').forEach(applyImage);
+      node.querySelectorAll('[data-asset-background]').forEach(applyBackground);
+    }
+
+    function applyAll(root) {
+      if (!manifest || !manifest.ok) return;
+      if (root === document) {
+        document.querySelectorAll('[data-asset-name]:not([data-asset-deferred])').forEach(applyImage);
+        document.querySelectorAll('[data-asset-background]').forEach(applyBackground);
+      } else {
+        applyNode(root);
+      }
+      setStatus('');
+    }
+
+    function reveal(name) {
+      if (!manifest || !manifest.ok) return false;
+      document.querySelectorAll('[data-asset-name]').forEach(function(node) {
+        if (node.getAttribute('data-asset-name') === name) applyImage(node);
+      });
+      return true;
+    }
+
+    function load() {
+      if (loading || manifest) return;
+      loading = true;
+      if (!window.google || !google.script || !google.script.run) {
+        loading = false;
+        setStatus('Elementos visuais disponíveis somente no webapp publicado.');
+        return;
+      }
+      google.script.run
+        .withSuccessHandler(function(result) {
+          loading = false;
+          manifest = result || { ok: false, assets: {} };
+          if (!manifest.ok) {
+            setStatus('Os caminhos visuais estão indisponíveis; a atividade textual continua acessível.');
+            return;
+          }
+          applyAll(document);
+          var detail = { project: manifest.project, names: Object.keys(manifest.assets || {}) };
+          window.dispatchEvent(new CustomEvent('waytogoassetsready', { detail: detail }));
+          window.dispatchEvent(new CustomEvent('gameassetsready', { detail: detail }));
+        })
+        .withFailureHandler(function() {
+          loading = false;
+          setStatus('Os caminhos visuais estão indisponíveis; a atividade textual continua acessível.');
+        })
+        .getGameAssetManifest();
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
+    else load();
+
+    new MutationObserver(function(records) {
+      if (!manifest || !manifest.ok) return;
+      records.forEach(function(record) { record.addedNodes.forEach(applyNode); });
+    }).observe(document.documentElement, { childList: true, subtree: true });
+
+    return { load: load, reveal: reveal, applyAll: applyAll };
+  })();
+</script>
